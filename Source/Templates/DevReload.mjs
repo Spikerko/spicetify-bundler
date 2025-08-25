@@ -120,12 +120,21 @@ socket.addEventListener("open", () => {
               return;
             }
 
-            const script = document.createElement("script");
-            script.textContent = message.Content;
-            script.type = "module";
-            script.defer = true;
-            document.body.appendChild(script);
-            ShowNotification("Loaded Code (MJS) bundle successfully", "success");
+            const blob = new Blob([message.Content], { type: "application/javascript" });
+
+            // Turn Blob into a URL
+            const url = URL.createObjectURL(blob);
+
+            import(url)
+              .then(() => {
+                ShowNotification("Loaded Code (MJS) bundle successfully", "success");
+                URL.revokeObjectURL(url);
+              })
+              .catch((error) => {
+                error("Loading Code (MJS) bundle was unsuccessful", error)
+                ShowNotification("Loading Code (MJS) bundle was unsuccessful", "error");
+              })
+            
         } else if (message.Identifier === stylesRequestId) {
             log("Injecting styles bundle");
             if (!message.Content) {
