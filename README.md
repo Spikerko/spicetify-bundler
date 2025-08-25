@@ -8,7 +8,7 @@ Supports React, TypeScript, CSS, and SASS for Spicetify extensions.
 ## Features
 
 - **Zero-config**: Out-of-the-box support for React, TypeScript, CSS, and SASS.
-- **Hot Reloading**: Live reload your extension in Spicetify during development.
+- **Live reload**: Live reload your extension in Spicetify during development.
 - **Release Bundling**: Minifies and bundles your extension for production.
 - **Spicetify Integration**: Automatically applies and toggles your extension in Spicetify.
 - **WebSocket Server**: For live updates and communication with the client.
