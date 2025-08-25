@@ -44,7 +44,7 @@ export default async function({
     const unapplyingExtension = ora(chalk.bgBlack(`  Unapplying Extension...  `));
     const storingExtensionOra = ora(chalk.bgBlack(`  Storing Extension...  `));
 
-    const Update = () => {
+    const Update = async () => {
         if (bundling) return undefined;
 
         bundling = true;
@@ -56,72 +56,68 @@ export default async function({
 
         testVersion++
 
-        return (
-            Bundle(
+        try {
+            const bundleResult = await Bundle(
                 {
                     Type: "Development",
                     Version: testVersion.toString(),
                     Name,
                     MainFile,
                 }
-            )
-            .then(
-                (result: string[]) => {
-                    const [css, code] = result;
-                    bundlingOra.stop();
+            );
 
-                    //ResetScreen();
+            const [css, code] = bundleResult;
+            bundlingOra.stop();
 
-                    DisplayDoneStatus()
+            //ResetScreen();
 
-                    const cssChanged = (testVersion === 1 ? false : (lastCss !== css));
-                    const codeChanged = (testVersion === 1 ? false : (lastCode !== code));
-                    
-                    if (RequireChangesToRefresh === true && !cssChanged && !codeChanged && testVersion !== 1) {
-                        console.log("");
-                        console.log(chalk.bgGrey("  Nothing changed. Doing nothing.  "));
-                    }
+            DisplayDoneStatus()
 
-                    if (cssChanged) {
-                        updateClientContent("StyleChange", css);
-                    }
+            const cssChanged = (testVersion === 1 ? false : (lastCss !== css));
+            const codeChanged = (testVersion === 1 ? false : (lastCode !== code));
+            
+            if (RequireChangesToRefresh === true && !cssChanged && !codeChanged && testVersion !== 1) {
+                console.log("");
+                console.log(chalk.bgGrey("  Nothing changed. Doing nothing.  "));
+            }
 
-                    if (codeChanged || !RequireChangesToRefresh) {
-                        updateClientContent("CodeChange", undefined)
-                    }
+            if (cssChanged) {
+                updateClientContent("StyleChange", css);
+            }
 
-                    lastCss = css;
-                    lastCode = code;
+            if (codeChanged || !RequireChangesToRefresh) {
+                updateClientContent("CodeChange", undefined)
+            }
 
-                    DisplayPrompt()
+            lastCss = css;
+            lastCode = code;
 
-                    bundling = false
-                }
-            )
-            .catch(
-                (error) => {
-                    resetCachedCodeValues();
+            DisplayPrompt()
 
-                    ResetScreen();
+            bundling = false
+        } catch (error) {
+            resetCachedCodeValues();
 
-                    bundlingOra.stop();
-                    console.log("")
-                    console.log(chalk.bgRed("  Failed to bundle. See error below  "))
-                    console.log(error);
-                    console.log("")
-                    console.log(chalk.bgRed("  Failed to bundle. See error above  "))
+            ResetScreen();
 
-                    broadcastBundlingError();
+            bundlingOra.stop();
+            console.log("")
+            console.log(chalk.bgRed("  Failed to bundle. See error below  "))
+            console.log(error);
+            console.log("")
+            console.log(chalk.bgRed("  Failed to bundle. See error above  "))
 
-                    DisplayPrompt()
+            broadcastBundlingError();
 
-                    bundling = false
-                }
-            )
-        )
+            DisplayPrompt()
+
+            bundling = false
+        }
     }
 
     ResetScreen();
+
+    await Update();
 
     {
 		console.log("")
@@ -155,8 +151,6 @@ export default async function({
 
 		DisplayDoneStatus()
 	}
-
-    Update();
 
     {
         const kp = keypress();
