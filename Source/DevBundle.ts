@@ -44,7 +44,7 @@ export default async function({
     const unapplyingExtension = ora(chalk.bgBlack(`  Unapplying Extension...  `));
     const storingExtensionOra = ora(chalk.bgBlack(`  Storing Extension...  `));
 
-    const Update = async () => {
+    const Update = async (displayStatuses: boolean = true) => {
         if (bundling) return undefined;
 
         bundling = true;
@@ -71,7 +71,7 @@ export default async function({
 
             //ResetScreen();
 
-            DisplayDoneStatus()
+            if (displayStatuses) DisplayDoneStatus();
 
             const cssChanged = (testVersion === 1 ? false : (lastCss !== css));
             const codeChanged = (testVersion === 1 ? false : (lastCode !== code));
@@ -92,7 +92,7 @@ export default async function({
             lastCss = css;
             lastCode = code;
 
-            DisplayPrompt()
+            if (displayStatuses) DisplayPrompt();
 
             bundling = false
         } catch (error) {
@@ -117,7 +117,6 @@ export default async function({
 
     ResetScreen();
 
-    await Update();
 
     {
 		console.log("")
@@ -144,12 +143,20 @@ export default async function({
 			devReloadTemplateMinified || devReloadTemplatePrepared
 		)
 
+        applyingExtensionOra.stop();
+
+        await Update(false);
+
+        applyingExtensionOra.start();
+
 		await ToggleExtension(SpicetifyEntryPoint, true);
         await Apply(true);
 
         applyingExtensionOra.stop();
 
-		DisplayDoneStatus()
+		DisplayDoneStatus();
+
+        DisplayPrompt();
 	}
 
     {
@@ -199,7 +206,7 @@ export default async function({
 
 					Deno.exit(0);
 				} else if (event.key === "return") {
-					Update()
+					Update(true)
 				}
 			}
 		)
