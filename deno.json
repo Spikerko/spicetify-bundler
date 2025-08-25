@@ -1,0 +1,29 @@
+{
+  "name": "@spicetify/bundler",
+  "description": "Spicetify Extension Bundler. Supports React, TypeScript, CSS and SASS",
+  "version": "1.0.0",
+  "exports": {
+    "./": "./main.ts",
+    "./cli": "./cli.ts"
+  },
+  "imports": {
+    "@codemonument/cliffy": "jsr:@codemonument/cliffy@^1.0.0-rc.3",
+    "@luca/esbuild-deno-loader": "jsr:@luca/esbuild-deno-loader@^0.11.1",
+    "@std/cli": "jsr:@std/cli@^1.0.21",
+    "@std/path": "jsr:@std/path@^1.1.2",
+    "autoprefixer": "npm:autoprefixer@^10.4.21",
+    "chalk": "npm:chalk@^5.6.0",
+    "cssnano": "npm:cssnano@^7.1.1",
+    "cssnano-preset-advanced": "npm:cssnano-preset-advanced@^7.0.9",
+    "esbuild": "npm:esbuild@^0.25.9",
+    "ora": "npm:ora@^8.2.0",
+    "postcss": "npm:postcss@^8.5.6",
+    "sass": "npm:sass@^1.90.0",
+    "terser": "npm:terser@^5.43.1"
+  },
+  "compilerOptions": {
+    "lib": ["deno.window", "dom", "es2020"],
+    "strict": true,
+    "jsx": "react"
+  }
+}
