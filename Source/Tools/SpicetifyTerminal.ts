@@ -41,7 +41,7 @@ export const ToggleExtension = (fileName: string, apply: boolean): Promise<void>
 		}
 	)
 	.output()
-	.then()
+	.then(() => undefined)
 )
 
 export const RemoveExtension = (path: string, withDevtools?: true): Promise<void> => (
@@ -59,5 +59,5 @@ export const Apply = (withDevtools?: true): Promise<void> => (
 		}
 	)
 	.output()
-	.then()
+	.then(() => undefined)
 )

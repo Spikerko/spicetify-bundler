@@ -159,7 +159,8 @@ export default async function({
     Update();
 
     {
-		keypress().addEventListener(
+        const kp = keypress();
+		kp.addEventListener(
 			"keydown",
 			async (event: KeyPressEvent) => {
 				if (
@@ -167,7 +168,7 @@ export default async function({
 					|| (event.key === "q")
 					|| (event.key === "l")
 				) {
-					keypress().dispose()
+					kp.dispose()
 
 					ResetScreen()
 
@@ -184,7 +185,7 @@ export default async function({
                             ${codeResult}
                         `;
                         const finalCodeResult = await MinifyJS(finalCodePrepared);
-                        
+
                         await Deno.writeTextFile(SpicetifyEntryPointPath, finalCodeResult || finalCodePrepared)
 						await Apply();
 
