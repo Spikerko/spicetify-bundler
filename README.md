@@ -1,32 +1,4 @@
 # @spicetify/bundler
-Spicetify Extension Bundler
-
-Supports React, TypeScript, CSS and SASS
-
-
-Ran tool
-Ran tool
-Ran tool
-Ran tool
-Ran tool
-Ran tool
-Ran tool
-Ran tool
-Ran tool
-Ran tool
-Ran tool
-Ran tool
-Ran tool
-Ran tool
-Ran tool
-Ran tool
-Ran tool
-Ran tool
-Here’s a comprehensive README for `@spicetify/bundler`, including usage, features, and a quickstart based on the codebase and the `ExtensionTesting` example.
-
----
-
-# @spicetify/bundler
 
 **Spicetify Extension Bundler**  
 Supports React, TypeScript, CSS, and SASS for Spicetify extensions.
