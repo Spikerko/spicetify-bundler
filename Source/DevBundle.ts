@@ -145,7 +145,7 @@ export default async function({
 
 		await Deno.writeTextFile(
 			SpicetifyEntryPointPath,
-			devReloadTemplateMinified ?? devReloadTemplatePrepared
+			devReloadTemplateMinified || devReloadTemplatePrepared
 		)
 
 		await ToggleExtension(SpicetifyEntryPoint, true);
@@ -178,13 +178,14 @@ export default async function({
                         const [cssResult, codeResult] = await Bundle({ Type: "Offline", Name, Version: "offline", MainFile });
                         
                         const cssInjectionCode = StylesInjectionString.replace("INSERT_CSS_HERE", cssResult);
-                        const finalCodeResult = await MinifyJS(`
+                        const finalCodePrepared = `
                             ${cssInjectionCode}
                             ${RequirementsPromiseCheckString}
                             ${codeResult}
-                        `);
-
-						await Deno.writeTextFile(SpicetifyEntryPointPath, finalCodeResult)
+                        `;
+                        const finalCodeResult = await MinifyJS(finalCodePrepared);
+                        
+                        await Deno.writeTextFile(SpicetifyEntryPointPath, finalCodeResult || finalCodePrepared)
 						await Apply();
 
 						storingExtensionOra.stop();

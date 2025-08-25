@@ -57,12 +57,11 @@ export default function({
         plugins.push(...(denoPlugins({ configPath: resolve(Deno.cwd(), "./deno.json") }) as unknown as esbuild.Plugin[]));
 
         const postCSSProcessor = PostCSS(
-            [
-                applyOptimizations
-                    ? CSSNano({ preset: CSSAdvancedNanoPreset(), plugins: [AutoPrefixer] })
-                    : AutoPrefixer
-            ]
+            applyOptimizations
+                ? [AutoPrefixer(), CSSNano({ preset: CSSAdvancedNanoPreset() })]
+                : [AutoPrefixer()]
         );
+        
         const absoluteSourcePath = resolve("./src");
 
         plugins.splice(

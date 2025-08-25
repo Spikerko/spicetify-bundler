@@ -17,7 +17,13 @@ export const GetSpicetifyDirectory = (): Promise<string> => {
 					}
 				)
 			).output()
-			.then(output => dirname(new TextDecoder('utf-8').decode(output.stdout).trim()))
+			.then(({ success, stdout, stderr }) => {
+				if (!success) {
+					const err = new TextDecoder('utf-8').decode(stderr);
+					throw new Error(`Failed to locate Spicetify directory: ${err || 'unknown error'}`);
+				}
+				return dirname(new TextDecoder('utf-8').decode(stdout).trim());
+			})
 		)
 	} else {
 		return storedSpicetifyDirectory
