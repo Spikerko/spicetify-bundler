@@ -1,4 +1,4 @@
-import { minify } from "npm:terser";
+import { minify } from "npm:terser@5.43.1";
 
 export const MinifyJS = async (code: string) => {
     const minified = await minify(code, {
@@ -14,7 +14,9 @@ export const MinifyJS = async (code: string) => {
         mangle: true
     });
 
-    return minified.code ?? "";
+    // Trim and guard against empty or all-whitespace output
+    const out = minified.code?.trim();
+    return out && out.length > 0 ? out : code;
 };
 
 

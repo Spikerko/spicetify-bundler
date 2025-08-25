@@ -1,10 +1,10 @@
 import { ToggleExtension, GetSpicetifyExtensionsDirectory, Apply, RemoveExtension } from "./Tools/SpicetifyTerminal.ts";
 import Bundle, { resetCachedCodeValues } from "./bundler.ts";
-import chalk from 'npm:chalk';
+import chalk from 'npm:chalk@5.6.0';
 import { keypress, type KeyPressEvent } from "jsr:@codemonument/cliffy@1.0.0-rc.3/keypress"
-import ora from 'npm:ora';
+import ora from 'npm:ora@8.2.0';
 import { broadcastBundlingError, updateClientContent } from "./WsServer.ts";
-import { join, fromFileUrl } from "jsr:@std/path"
+import { join, fromFileUrl } from "jsr:@std/path@1.1.2"
 import { MinifyJS } from "./Tools/MinifyCode.ts";
 import { RequirementsPromiseCheckString, StylesInjectionString } from "./Tools/constants.ts";
 import { ResetScreen } from "./Tools/ResetScreen.ts";
@@ -145,7 +145,7 @@ export default async function({
 
 		await Deno.writeTextFile(
 			SpicetifyEntryPointPath,
-			devReloadTemplateMinified ?? devReloadTemplatePrepared
+			devReloadTemplateMinified || devReloadTemplatePrepared
 		)
 
 		await ToggleExtension(SpicetifyEntryPoint, true);
@@ -159,7 +159,8 @@ export default async function({
     Update();
 
     {
-		keypress().addEventListener(
+        const kp = keypress();
+		kp.addEventListener(
 			"keydown",
 			async (event: KeyPressEvent) => {
 				if (
@@ -167,7 +168,7 @@ export default async function({
 					|| (event.key === "q")
 					|| (event.key === "l")
 				) {
-					keypress().dispose()
+					kp.dispose()
 
 					ResetScreen()
 
@@ -178,13 +179,14 @@ export default async function({
                         const [cssResult, codeResult] = await Bundle({ Type: "Offline", Name, Version: "offline", MainFile });
                         
                         const cssInjectionCode = StylesInjectionString.replace("INSERT_CSS_HERE", cssResult);
-                        const finalCodeResult = await MinifyJS(`
+                        const finalCodePrepared = `
                             ${cssInjectionCode}
                             ${RequirementsPromiseCheckString}
                             ${codeResult}
-                        `);
+                        `;
+                        const finalCodeResult = await MinifyJS(finalCodePrepared);
 
-						await Deno.writeTextFile(SpicetifyEntryPointPath, finalCodeResult)
+                        await Deno.writeTextFile(SpicetifyEntryPointPath, finalCodeResult || finalCodePrepared)
 						await Apply();
 
 						storingExtensionOra.stop();

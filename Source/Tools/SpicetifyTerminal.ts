@@ -3,7 +3,7 @@
     https://jsr.io/@socali/spices/4.1.1/Spicetify/Terminal.ts
 */
 
-import { dirname, join } from "jsr:@std/path"
+import { dirname, join } from "jsr:@std/path@1.1.2"
 
 let storedSpicetifyDirectory: (Promise<string> | undefined)
 export const GetSpicetifyDirectory = (): Promise<string> => {
@@ -17,7 +17,13 @@ export const GetSpicetifyDirectory = (): Promise<string> => {
 					}
 				)
 			).output()
-			.then(output => dirname(new TextDecoder('utf-8').decode(output.stdout).trim()))
+			.then(({ success, stdout, stderr }) => {
+				if (!success) {
+					const err = new TextDecoder('utf-8').decode(stderr);
+					throw new Error(`Failed to locate Spicetify directory: ${err || 'unknown error'}`);
+				}
+				return dirname(new TextDecoder('utf-8').decode(stdout).trim());
+			})
 		)
 	} else {
 		return storedSpicetifyDirectory
@@ -35,7 +41,7 @@ export const ToggleExtension = (fileName: string, apply: boolean): Promise<void>
 		}
 	)
 	.output()
-	.then()
+	.then(() => undefined)
 )
 
 export const RemoveExtension = (path: string, withDevtools?: true): Promise<void> => (
@@ -53,5 +59,5 @@ export const Apply = (withDevtools?: true): Promise<void> => (
 		}
 	)
 	.output()
-	.then()
+	.then(() => undefined)
 )

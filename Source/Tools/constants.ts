@@ -1,4 +1,4 @@
-import { join } from 'jsr:@std/path';
+import { join } from 'jsr:@std/path@1.1.2';
 
 export const isWindows = Deno.build.os === 'windows';
 
