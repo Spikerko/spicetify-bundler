@@ -1,6 +1,6 @@
-import chalk from "npm:chalk";
+import chalk from "npm:chalk@5.6.0";
 import { ResetScreen } from "./Tools/ResetScreen.ts";
-import ora from "npm:ora";
+import ora from "npm:ora@8.2.0";
 import Bundle from "./bundler.ts";
 
 export type ReleaseBundleType = {

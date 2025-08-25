@@ -1,10 +1,10 @@
 import { ToggleExtension, GetSpicetifyExtensionsDirectory, Apply, RemoveExtension } from "./Tools/SpicetifyTerminal.ts";
 import Bundle, { resetCachedCodeValues } from "./bundler.ts";
-import chalk from 'npm:chalk';
+import chalk from 'npm:chalk@5.6.0';
 import { keypress, type KeyPressEvent } from "jsr:@codemonument/cliffy@1.0.0-rc.3/keypress"
-import ora from 'npm:ora';
+import ora from 'npm:ora@8.2.0';
 import { broadcastBundlingError, updateClientContent } from "./WsServer.ts";
-import { join, fromFileUrl } from "jsr:@std/path"
+import { join, fromFileUrl } from "jsr:@std/path@1.1.2"
 import { MinifyJS } from "./Tools/MinifyCode.ts";
 import { RequirementsPromiseCheckString, StylesInjectionString } from "./Tools/constants.ts";
 import { ResetScreen } from "./Tools/ResetScreen.ts";

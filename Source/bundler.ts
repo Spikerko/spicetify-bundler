@@ -1,13 +1,13 @@
 import { externalGlobalPlugin } from "./EsbuildPlugins/externalGlobalPlugin.ts";
-import * as esbuild from "npm:esbuild";
-import { denoPlugins } from "jsr:@luca/esbuild-deno-loader";
+import * as esbuild from "npm:esbuild@0.25.9";
+import { denoPlugins } from "jsr:@luca/esbuild-deno-loader@0.11.1";
 
-import { compileAsync as SASSCompile } from "npm:sass";
-import PostCSS from "npm:postcss";
-import AutoPrefixer from "npm:autoprefixer";
-import CSSNano from "npm:cssnano";
-import CSSAdvancedNanoPreset from "npm:cssnano-preset-advanced";
-import { dirname, join, resolve, relative } from "jsr:@std/path";
+import { compileAsync as SASSCompile } from "npm:sass@1.90.0";
+import PostCSS from "npm:postcss@8.5.6";
+import AutoPrefixer from "npm:autoprefixer@10.4.21";
+import CSSNano from "npm:cssnano@7.1.1";
+import CSSAdvancedNanoPreset from "npm:cssnano-preset-advanced@7.0.9";
+import { dirname, join, resolve, relative } from "jsr:@std/path@1.1.2";
 import { MinifyJS } from "./Tools/MinifyCode.ts";
 import { RequirementsPromiseCheckString, StylesInjectionString } from "./Tools/constants.ts";
 

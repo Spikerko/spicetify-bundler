@@ -3,7 +3,7 @@
     https://jsr.io/@socali/spices/4.1.1/Spicetify/Terminal.ts
 */
 
-import { dirname, join } from "jsr:@std/path"
+import { dirname, join } from "jsr:@std/path@1.1.2"
 
 let storedSpicetifyDirectory: (Promise<string> | undefined)
 export const GetSpicetifyDirectory = (): Promise<string> => {

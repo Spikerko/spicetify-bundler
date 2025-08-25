@@ -1,4 +1,4 @@
-import { minify } from "npm:terser";
+import { minify } from "npm:terser@5.43.1";
 
 export const MinifyJS = async (code: string) => {
     const minified = await minify(code, {
