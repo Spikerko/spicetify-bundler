@@ -138,7 +138,7 @@ Bundle({
 - **Name**: Extension name (required)
 - **Version**: Required for `"Release"`
 - **EntrypointFile**: Entry file (default: `./src/index.tsx`)
-- **BuildDir**: Output directory (default: `./dist`, only for `"Release"`)
+- **OutputDir**: Output directory (default: `./dist`, only for `"Release"`)
 - **RequireChangesToRefresh**: Only for `"Development"`
 
 ### Example
