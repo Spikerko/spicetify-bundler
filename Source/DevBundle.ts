@@ -136,7 +136,7 @@ export default async function({
             ${RequirementsPromiseCheckString}
             ${devReloadTemplate.replace("-1", `http://localhost:9235`).replace("-2", Name)}
         `;
-        const devReloadTemplateMinified = devReloadTemplatePrepared;
+        const devReloadTemplateMinified = await MinifyJS(devReloadTemplatePrepared);
 
 		await Deno.writeTextFile(
 			SpicetifyEntryPointPath,

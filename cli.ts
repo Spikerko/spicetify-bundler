@@ -1,8 +1,11 @@
 // deno-lint-ignore ban-ts-comment
 // @ts-ignore
+import ora from "npm:ora";
 import DevBundle from "./Source/DevBundle.ts";
 import ReleaseBundle from "./Source/ReleaseBundle.ts";
-import { startWSServer } from "./Source/WsServer.ts";
+import { startWSServer, wsRunning } from "./Source/WsServer.ts";
+import chalk from "npm:chalk";
+import { ResetScreen } from "./Source/Tools/ResetScreen.ts";
 
 export type RunBundlerType =
     | {
@@ -21,7 +24,6 @@ export type RunBundlerType =
     };
 
 
-// deno-lint-ignore require-await
 export async function Bundle({
     Type,
     Version,
@@ -35,7 +37,31 @@ export async function Bundle({
 
     const mainFileProcessed = EntrypointFile ?? "./src/index.tsx";
 
+    const wsPreparingOra = ora(chalk.bgBlue("  Starting the Websocket server...  "))
+
+    wsPreparingOra.start();
+
     startWSServer();
+
+    await new Promise<void>(
+        resolve => {
+            const interval = setInterval(
+                () => {
+                    if (wsRunning === true) {
+                        clearInterval(interval);
+                        resolve();
+                    };
+                },
+                10
+            );
+        }
+    );
+
+    ResetScreen();
+
+    wsPreparingOra.stop();
+
+    ResetScreen();
 
     if (Type === "Development") {
         if (!Type || !Name) {

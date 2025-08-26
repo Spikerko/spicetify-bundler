@@ -1,28 +1,17 @@
 import { minify } from "npm:terser@5.43.1";
 
 export const MinifyJS = async (code: string) => {
-    const minified = await minify(code, {
-        parse: {
-            ecma: 2020,
-            bare_returns: false
-        },
-        compress: {
-            ecma: 2020
-        },
-        mangle: true,
-        format: {
-            ecma: 2020
-        },
-        module: true,
-        keep_classnames: true,
-        keep_fnames: false
-    });
+  const minified = await minify(code, {
+    ecma: 2020,       // allow `import()`
+    module: true,     // parse as ES module
+    compress: true,   // optional: enable compression
+    mangle: true,     // optional: shorten variable names
+  });
 
-    // Trim and guard against empty or all-whitespace output
-    const out = minified.code?.trim();
-    return out && out.length > 0 ? out : code;
+  // Trim and guard against empty or all-whitespace output
+  const out = minified.code?.trim();
+  return out && out.length > 0 ? out : code;
 };
-
 
 
 /* export const MinifyJS = (code: string) => {
