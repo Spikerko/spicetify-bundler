@@ -32,8 +32,16 @@ const formatSocketMessage = ({
 
 const clients = new Set<WebSocket>();
 
+export let wsRunning = false;
+
 export function startWSServer() {
-  Deno.serve({ port: 9235 }, (req: Request) => {
+  wsRunning = false;
+  Deno.serve({
+    port: 9235,
+    onListen() {
+      wsRunning = true;
+    },
+  }, (req: Request) => {
     const { socket, response } = Deno.upgradeWebSocket(req);
 
     socket.onopen = () => {
