@@ -1,10 +1,8 @@
-// deno-lint-ignore ban-ts-comment
-// @ts-ignore
-import ora from "npm:ora";
 import DevBundle from "./Source/DevBundle.ts";
 import ReleaseBundle from "./Source/ReleaseBundle.ts";
 import { startWSServer, wsRunning } from "./Source/WsServer.ts";
-import chalk from "npm:chalk";
+import chalk from 'npm:chalk@5.6.0';
+import ora from 'npm:ora@8.2.0';
 import { ResetScreen } from "./Source/Tools/ResetScreen.ts";
 
 export type RunBundlerType =
