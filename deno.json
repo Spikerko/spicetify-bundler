@@ -19,7 +19,6 @@
     "cssnano": "npm:cssnano@^7.1.1",
     "cssnano-preset-advanced": "npm:cssnano-preset-advanced@^7.0.9",
     "esbuild": "npm:esbuild@^0.25.9",
-    "esbuild-plugin-alias": "npm:esbuild-plugin-alias@^0.2.1",
     "ora": "npm:ora@^8.2.0",
     "postcss": "npm:postcss@^8.5.6",
     "sass": "npm:sass@^1.90.0",
