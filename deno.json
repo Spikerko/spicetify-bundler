@@ -1,7 +1,7 @@
 {
   "name": "@spicetify/bundler",
   "description": "Spicetify Extension Bundler. Supports React, TypeScript, CSS and SASS",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "license": "MIT",
   "exports": {
     ".": "./main.ts",
@@ -9,8 +9,6 @@
   },
   "imports": {
     "@codemonument/cliffy": "jsr:@codemonument/cliffy@^1.0.0-rc.3",
-    "@esbuild-plugins/node-globals-polyfill": "npm:@esbuild-plugins/node-globals-polyfill@^0.2.3",
-    "@esbuild-plugins/node-modules-polyfill": "npm:@esbuild-plugins/node-modules-polyfill@^0.2.2",
     "@luca/esbuild-deno-loader": "jsr:@luca/esbuild-deno-loader@^0.11.1",
     "@std/cli": "jsr:@std/cli@^1.0.21",
     "@std/path": "jsr:@std/path@^1.1.2",

@@ -7,11 +7,9 @@ import PostCSS from "npm:postcss@8.5.6";
 import AutoPrefixer from "npm:autoprefixer@10.4.21";
 import CSSNano from "npm:cssnano@7.1.1";
 import CSSAdvancedNanoPreset from "npm:cssnano-preset-advanced@7.0.9";
-import { dirname, join, resolve, relative } from "jsr:@std/path@1.1.2";
+import { dirname, join, resolve, relative, fromFileUrl } from "jsr:@std/path@1.1.2";
 import { MinifyJS } from "./Tools/MinifyCode.ts";
 import { RequirementsPromiseCheckString, StylesInjectionString } from "./Tools/constants.ts";
-import { NodeModulesPolyfillPlugin } from "npm:@esbuild-plugins/node-modules-polyfill@0.2.2";
-import { NodeGlobalsPolyfillPlugin } from "npm:@esbuild-plugins/node-globals-polyfill@0.2.3";
 
 export type BuildType = {
     Type: "Development" | "Release" | "Offline";
@@ -40,6 +38,9 @@ export const resetCachedCodeValues = () => {
 	LastProcessedCSSString = undefined;
 	LastProcessedCodeString = undefined;
 }
+
+
+const r = (s: string) => fromFileUrl(import.meta.resolve(`npm:${s}`));
 
 export default function({
     Type,
@@ -135,14 +136,23 @@ export default function({
         mainFields: ["browser", "module", "main"],
         conditions: ["browser", "module", "import"],
         alias: {
-            "node:url": "node-stdlib-browser/url",
-            "url": "node-stdlib-browser/url",
+            "node:url": r("node-stdlib-browser/url"),
+            "url": r("node-stdlib-browser/url"),
+          
+            "node:util": r("node-stdlib-browser/util"),
+            "util": r("node-stdlib-browser/util"),
+          
+            "node:buffer": r("buffer"),
+            "buffer": r("buffer"),
+          
+            "node:process": r("process"),
+            "process": r("process"),
+          
+            "querystring": r("querystring"),
+            "punycode": r("punycode"),
+            "inherits": r("inherits"),
         },
-        plugins: [
-          NodeGlobalsPolyfillPlugin({ process: true, buffer: true }),
-          NodeModulesPolyfillPlugin(),
-          ...(plugins ?? []),
-        ],
+        plugins,
         platform: "browser",
         format: "esm",
         bundle: true,
