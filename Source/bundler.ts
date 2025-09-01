@@ -137,6 +137,9 @@ export default function({
         minify: applyOptimizations,
         legalComments: "none",
         write: false,
+		loader: {
+	        '.wasm': 'file', // <-- tell esbuild to handle WASM files
+	    },
     }).then(async (buildResult) => {
 
         const code = buildResult.outputFiles?.[0]?.text ?? "";
