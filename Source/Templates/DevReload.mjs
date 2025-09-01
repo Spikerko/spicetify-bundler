@@ -125,6 +125,8 @@ socket.addEventListener("open", () => {
             // Turn Blob into a URL
             const url = URL.createObjectURL(blob);
 
+            log("Importing URL", url);
+
             import(url)
               .then(() => {
                 ShowNotification("Loaded Code (MJS) bundle successfully", "success");
