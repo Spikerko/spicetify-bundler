@@ -24,8 +24,6 @@
     "jsr:@std/path@^1.1.2": "1.1.2",
     "jsr:@std/testing@0.221.0": "0.221.0",
     "jsr:@std/text@0.221.0": "0.221.0",
-    "npm:@esbuild-plugins/node-globals-polyfill@~0.2.3": "0.2.3_esbuild@0.25.9",
-    "npm:@esbuild-plugins/node-modules-polyfill@~0.2.2": "0.2.2_esbuild@0.25.9",
     "npm:autoprefixer@10.4.21": "10.4.21_postcss@8.5.6",
     "npm:autoprefixer@^10.4.21": "10.4.21_postcss@8.5.6",
     "npm:chalk@5.6.0": "5.6.0",
@@ -34,7 +32,6 @@
     "npm:cssnano-preset-advanced@^7.0.9": "7.0.9_postcss@8.5.6",
     "npm:cssnano@7.1.1": "7.1.1_postcss@8.5.6",
     "npm:cssnano@^7.1.1": "7.1.1_postcss@8.5.6",
-    "npm:esbuild@0.25.9": "0.25.9",
     "npm:esbuild@~0.25.9": "0.25.9",
     "npm:ora@8.2.0": "8.2.0",
     "npm:ora@^8.2.0": "8.2.0",
@@ -135,20 +132,6 @@
     }
   },
   "npm": {
-    "@esbuild-plugins/node-globals-polyfill@0.2.3_esbuild@0.25.9": {
-      "integrity": "sha512-r3MIryXDeXDOZh7ih1l/yE9ZLORCd5e8vWg02azWRGj5SPTuoh69A2AIyn0Z31V/kHBfZ4HgWJ+OK3GTTwLmnw==",
-      "dependencies": [
-        "esbuild"
-      ]
-    },
-    "@esbuild-plugins/node-modules-polyfill@0.2.2_esbuild@0.25.9": {
-      "integrity": "sha512-LXV7QsWJxRuMYvKbiznh+U1ilIop3g2TeKRzUxOG5X3YITc8JyyTa90BmLwqqv0YnX4v32CSlG+vsziZp9dMvA==",
-      "dependencies": [
-        "esbuild",
-        "escape-string-regexp",
-        "rollup-plugin-node-polyfills"
-      ]
-    },
     "@esbuild/aix-ppc64@0.25.9": {
       "integrity": "sha512-OaGtL73Jck6pBKjNIe24BnFE6agGl+6KxDtTfHhy1HmhthfKouEcOhqpSL64K4/0WCtbKFLOdzD/44cJ4k9opA==",
       "os": ["aix"],
@@ -657,12 +640,6 @@
     "escalade@3.2.0": {
       "integrity": "sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA=="
     },
-    "escape-string-regexp@4.0.0": {
-      "integrity": "sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA=="
-    },
-    "estree-walker@0.6.1": {
-      "integrity": "sha512-SqmZANLWS0mnatqbSfRP5g8OXZC12Fgg1IwNtLsyHDzJizORW4khDfjPqJZsemPWBB2uqykUah5YpQ6epsqC/w=="
-    },
     "fill-range@7.1.1": {
       "integrity": "sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==",
       "dependencies": [
@@ -713,12 +690,6 @@
       "dependencies": [
         "chalk",
         "is-unicode-supported@1.3.0"
-      ]
-    },
-    "magic-string@0.25.9": {
-      "integrity": "sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==",
-      "dependencies": [
-        "sourcemap-codec"
       ]
     },
     "mdn-data@2.0.28": {
@@ -1041,27 +1012,6 @@
         "signal-exit"
       ]
     },
-    "rollup-plugin-inject@3.0.2": {
-      "integrity": "sha512-ptg9PQwzs3orn4jkgXJ74bfs5vYz1NCZlSQMBUA0wKcGp5i5pA1AO3fOUEte8enhGUC+iapTCzEWw2jEFFUO/w==",
-      "dependencies": [
-        "estree-walker",
-        "magic-string",
-        "rollup-pluginutils"
-      ],
-      "deprecated": true
-    },
-    "rollup-plugin-node-polyfills@0.2.1": {
-      "integrity": "sha512-4kCrKPTJ6sK4/gLL/U5QzVT8cxJcofO0OU74tnB19F40cmuAKSzH5/siithxlofFEjwvw1YAhPmbvGNA6jEroA==",
-      "dependencies": [
-        "rollup-plugin-inject"
-      ]
-    },
-    "rollup-pluginutils@2.8.2": {
-      "integrity": "sha512-EEp9NhnUkwY8aif6bxgovPHMoMoNr2FulJziTndpt5H9RdwC47GSGuII9XxpSdzVGM0GWrNPHV6ie1LTNJPaLQ==",
-      "dependencies": [
-        "estree-walker"
-      ]
-    },
     "sass@1.90.0": {
       "integrity": "sha512-9GUyuksjw70uNpb1MTYWsH9MQHOHY6kwfnkafC24+7aOMZn9+rVMBxRbLvw756mrBFbIsFg6Xw9IkR2Fnn3k+Q==",
       "dependencies": [
@@ -1092,10 +1042,6 @@
     },
     "source-map@0.6.1": {
       "integrity": "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g=="
-    },
-    "sourcemap-codec@1.4.8": {
-      "integrity": "sha512-9NykojV5Uih4lgo5So5dtw+f0JgJX30KCNI8gwhz2J9A15wD0Ml6tjHKwf6fTSa6fAdVBdZeNOs9eJ71qCk8vA==",
-      "deprecated": true
     },
     "stdin-discarder@0.2.2": {
       "integrity": "sha512-UhDfHmA92YAlNnCfhmq0VeNL5bDbiZGg7sZ2IvPsXubGkiNa9EC+tUTsjBRsYUAz87btI6/1wf4XoVvQ3uRnmQ=="
@@ -1170,8 +1116,6 @@
       "jsr:@luca/esbuild-deno-loader@~0.11.1",
       "jsr:@std/cli@^1.0.21",
       "jsr:@std/path@^1.1.2",
-      "npm:@esbuild-plugins/node-globals-polyfill@~0.2.3",
-      "npm:@esbuild-plugins/node-modules-polyfill@~0.2.2",
       "npm:autoprefixer@^10.4.21",
       "npm:chalk@^5.6.0",
       "npm:cssnano-preset-advanced@^7.0.9",
