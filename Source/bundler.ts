@@ -138,7 +138,7 @@ export default function({
         legalComments: "none",
         write: false,
 		loader: {
-	        '.wasm': 'file', // <-- tell esbuild to handle WASM files
+	        '.wasm': 'binary', // <-- tell esbuild to handle WASM files
 	    },
     }).then(async (buildResult) => {
 
