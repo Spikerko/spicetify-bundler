@@ -130,8 +130,8 @@ socket.addEventListener("open", () => {
                 ShowNotification("Loaded Code (MJS) bundle successfully", "success");
                 URL.revokeObjectURL(url);
               })
-              .catch((error) => {
-                error("Loading Code (MJS) bundle was unsuccessful", error)
+              .catch((err) => {
+                error("Loading Code (MJS) bundle was unsuccessful", err)
                 ShowNotification("Loading Code (MJS) bundle was unsuccessful", "error");
               })
             
