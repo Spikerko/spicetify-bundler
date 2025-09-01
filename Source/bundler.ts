@@ -10,6 +10,9 @@ import CSSAdvancedNanoPreset from "npm:cssnano-preset-advanced@7.0.9";
 import { dirname, join, resolve, relative } from "jsr:@std/path@1.1.2";
 import { MinifyJS } from "./Tools/MinifyCode.ts";
 import { RequirementsPromiseCheckString, StylesInjectionString } from "./Tools/constants.ts";
+import { NodeModulesPolyfillPlugin } from "npm:@esbuild-plugins/node-modules-polyfill@0.2.2";
+import { NodeGlobalsPolyfillPlugin } from "npm:@esbuild-plugins/node-globals-polyfill@0.2.3";
+import alias from "npm:esbuild-plugin-alias@0.2.1";
 
 export type BuildType = {
     Type: "Development" | "Release" | "Offline";
@@ -129,7 +132,18 @@ export default function({
             (buildDirectory === undefined) ? undefined
             : join(buildDirectory, `${Name}@${Version}.mjs`)
         ),
-        plugins,
+        define: { global: "window" },
+        mainFields: ["browser", "module", "main"],
+        conditions: ["browser", "module", "import"],
+        plugins: [
+          alias({
+            'node:url': 'node-stdlib-browser/url',
+            'url': 'node-stdlib-browser/url',
+          }),
+          NodeGlobalsPolyfillPlugin({ process: true, buffer: true }),
+          NodeModulesPolyfillPlugin(),
+          ...(plugins ?? []),
+        ],
         platform: "browser",
         format: "esm",
         bundle: true,
