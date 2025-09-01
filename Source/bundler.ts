@@ -12,7 +12,6 @@ import { MinifyJS } from "./Tools/MinifyCode.ts";
 import { RequirementsPromiseCheckString, StylesInjectionString } from "./Tools/constants.ts";
 import { NodeModulesPolyfillPlugin } from "npm:@esbuild-plugins/node-modules-polyfill@0.2.2";
 import { NodeGlobalsPolyfillPlugin } from "npm:@esbuild-plugins/node-globals-polyfill@0.2.3";
-import alias from "npm:esbuild-plugin-alias@0.2.1";
 
 export type BuildType = {
     Type: "Development" | "Release" | "Offline";
@@ -135,11 +134,11 @@ export default function({
         define: { global: "window" },
         mainFields: ["browser", "module", "main"],
         conditions: ["browser", "module", "import"],
+        alias: {
+            "node:url": "node-stdlib-browser/url",
+            "url": "node-stdlib-browser/url",
+        },
         plugins: [
-          alias({
-            'node:url': 'node-stdlib-browser/url',
-            'url': 'node-stdlib-browser/url',
-          }),
           NodeGlobalsPolyfillPlugin({ process: true, buffer: true }),
           NodeModulesPolyfillPlugin(),
           ...(plugins ?? []),
