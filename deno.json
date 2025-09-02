@@ -1,7 +1,7 @@
 {
   "name": "@spicetify/bundler",
   "description": "Spicetify Extension Bundler. Supports React, TypeScript, CSS and SASS",
-  "version": "1.1.7",
+  "version": "1.1.9",
   "license": "MIT",
   "exports": {
     ".": "./main.ts",

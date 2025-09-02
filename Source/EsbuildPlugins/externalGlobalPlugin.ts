@@ -9,7 +9,7 @@ export const externalGlobalPlugin = (externals: Record<string, string> = {
     react: 'Spicetify.React',
     'react-dom': 'Spicetify.ReactDOM',
     'react-dom/client': 'Spicetify.ReactDOM',
-    'react-dom/server': 'Spicetify.ReactDOMServer',
+    'react-dom/server': 'Spicetify.ReactDOMServer'
 }) => {
   const namespace = 'external-global';
   return {

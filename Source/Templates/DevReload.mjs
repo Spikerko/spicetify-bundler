@@ -120,6 +120,10 @@ socket.addEventListener("open", () => {
               return;
             }
 
+            if (message.Content.includes(`"url"`) || message.Content.includes(`'url'`) || message.Content.includes("`url`")) {
+              log("CONTAINS URL", message)
+            }
+
             const blob = new Blob([message.Content], { type: "application/javascript" });
 
             // Turn Blob into a URL
@@ -130,7 +134,6 @@ socket.addEventListener("open", () => {
             import(url)
               .then(() => {
                 ShowNotification("Loaded Code (MJS) bundle successfully", "success");
-                URL.revokeObjectURL(url);
               })
               .catch((err) => {
                 error("Loading Code (MJS) bundle was unsuccessful", err)

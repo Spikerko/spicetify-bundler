@@ -54,6 +54,75 @@ export default function({
     const plugins: esbuild.Plugin[] = [];
     const rawCSS: string[] = [];
 
+    plugins.push(
+        {
+            name: "url-shim",
+            setup(build) {
+                // Catch bare "url" imports
+                build.onResolve({ filter: /^url$/ }, () => ({
+                    path: "url-shim",
+                    namespace: "url-shim",
+                }));
+
+                // Serve an ESM module as a virtual shim
+                build.onLoad({ filter: /.*/, namespace: "url-shim" }, () => {
+                    const contents = `
+export function parse(input, parseQueryString = false) {
+    try {
+        const base = (typeof input === 'string' && /^[a-zA-Z][a-zA-Z\\d+.-]*:/.test(input)) 
+        ? undefined 
+        : (typeof location !== 'undefined' ? location.origin : 'http://localhost');
+        const u = base ? new URL(input, base) : new URL(input);
+        return {
+        href: u.href,
+        protocol: u.protocol,
+        auth: null,
+        host: u.host,
+        hostname: u.hostname,
+        port: u.port,
+        pathname: u.pathname,
+        search: u.search,
+        query: parseQueryString ? Object.fromEntries(u.searchParams.entries()) : (u.search ? u.search.slice(1) : null),
+        hash: u.hash
+        };
+    } catch (e) {
+        return { href: String(input), pathname: String(input) };
+    }
+}
+
+export function format(obj) {
+    if (!obj) return '';
+    if (typeof obj === 'string') return obj;
+    if (obj instanceof URL) return obj.toString();
+    if (obj.href) return obj.href;
+    try {
+        const base = obj.protocol ? \`\${obj.protocol}//\${obj.host || obj.hostname || ''}\` : (typeof location !== 'undefined' ? location.origin : 'http://localhost');
+        const u = new URL(obj.pathname || '', base);
+        if (obj.search) u.search = typeof obj.search === 'string' ? obj.search : (obj.query ? new URLSearchParams(obj.query).toString() : '');
+        return u.toString();
+    } catch (e) {
+        return obj.path || obj.pathname || '';
+    }
+}
+
+export function resolve(from, to) {
+    try {
+        const base = /^[a-zA-Z][a-zA-Z\\d+.-]*:/.test(from) 
+        ? from 
+        : (typeof location !== 'undefined' ? location.origin + (from.startsWith('/') ? '' : '/') + from : from);
+        return new URL(to, base).toString();
+    } catch (e) {
+        return to;
+    }
+}
+                    `.trim();
+
+                    return { contents, loader: "js" };
+                });
+            }
+        }
+    );
+
     const applyOptimizations = (Type !== "Development");
 
     {
@@ -68,7 +137,7 @@ export default function({
         const absoluteSourcePath = resolve("./src");
 
         plugins.splice(
-            1, 0,
+            2, 0,
             {
                 name: SCSSInlineStyleNamespace,
                 setup(build) {
@@ -132,26 +201,6 @@ export default function({
             (buildDirectory === undefined) ? undefined
             : join(buildDirectory, `${Name}@${Version}.mjs`)
         ),
-        define: { global: "window" },
-        mainFields: ["browser", "module", "main"],
-        conditions: ["browser", "module", "import"],
-        alias: {
-            "node:url": r("node-stdlib-browser/url"),
-            "url": r("node-stdlib-browser/url"),
-          
-            "node:util": r("node-stdlib-browser/util"),
-            "util": r("node-stdlib-browser/util"),
-          
-            "node:buffer": r("buffer"),
-            "buffer": r("buffer"),
-          
-            "node:process": r("process"),
-            "process": r("process"),
-          
-            "querystring": r("querystring"),
-            "punycode": r("punycode"),
-            "inherits": r("inherits"),
-        },
         plugins,
         platform: "browser",
         format: "esm",
@@ -160,12 +209,16 @@ export default function({
         minify: applyOptimizations,
         legalComments: "none",
         write: false,
-		loader: {
-	        '.wasm': 'binary', // <-- tell esbuild to handle WASM files
-	    },
+        /* loader: {
+            ".wasm": "binary"
+        } */
     }).then(async (buildResult) => {
 
-        const code = buildResult.outputFiles?.[0]?.text ?? "";
+        const buildResultCode = buildResult.outputFiles?.[0]?.text ?? "";
+        const code = buildResultCode.replace(/\(void 0\)\(\)/g, "").replace(/\(void 0\)/g, "").replace(
+            /new Array\(128\)\.fill;/g,
+            "new Array(128).fill(undefined);"
+        );
 
         const css = rawCSS.join("\n");
         const preparedCss = css.replace(/`/g, "\\`");
