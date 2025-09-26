@@ -19,19 +19,27 @@ export type RunBundlerType =
         Name: string;
         EntrypointFile?: string;
         RequireChangesToRefresh?: boolean;
+        Port?: number
     };
 
+export let currentPort = 9235;
 
 export async function Bundle({
     Type,
     Version,
     Name,
     EntrypointFile,
-    // @ts-expect-error RequireChangesToRefresh only exists on Development or Offline type
+    // @ts-expect-error RequireChangesToRefresh only exists on Development type
     RequireChangesToRefresh,
     // @ts-expect-error BuildDir only exists on Release type
-    OutputDir
+    OutputDir,
+    // @ts-expect-error Port only exists on Development type
+    Port,
 }: RunBundlerType) {
+
+    if (Port !== undefined && typeof Port === "number") {
+        currentPort = Port;
+    }
 
     const mainFileProcessed = EntrypointFile ?? "./src/index.tsx";
 
