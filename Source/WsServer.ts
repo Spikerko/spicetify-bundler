@@ -1,4 +1,5 @@
-import { LastProcessedCodeString, LastProcessedCSSString } from "./bundler.ts";
+import { currentPort } from "../cli.ts";
+import { code_cache } from "./caches.ts";
 
 const generateRandomString = (length = 8) => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -37,7 +38,7 @@ export let wsRunning = false;
 export function startWSServer() {
   wsRunning = false;
   Deno.serve({
-    port: 9235,
+    port: currentPort,
     onListen() {
       wsRunning = true;
     },
@@ -59,14 +60,14 @@ export function startWSServer() {
               type: "response",
               typeOfMessage: "response",
               identifier: message.Identifier,
-              content: LastProcessedCodeString
+              content: code_cache.code_string
             }))
           } else if (message.Content === "styles") {
             socket.send(formatSocketMessage({
               type: "response",
               typeOfMessage: "response",
               identifier: message.Identifier,
-              content: LastProcessedCSSString
+              content: code_cache.css_string
             }))
           }
         }

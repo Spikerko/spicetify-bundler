@@ -1,5 +1,5 @@
 import { ToggleExtension, GetSpicetifyExtensionsDirectory, Apply, RemoveExtension } from "./Tools/SpicetifyTerminal.ts";
-import Bundle, { resetCachedCodeValues } from "./bundler.ts";
+import Bundle from "./bundler.ts";
 import chalk from 'npm:chalk@5.6.0';
 import { keypress, type KeyPressEvent } from "jsr:@codemonument/cliffy@1.0.0-rc.3/keypress"
 import ora from 'npm:ora@8.2.0';
@@ -8,6 +8,9 @@ import { join, fromFileUrl } from "jsr:@std/path@1.1.2"
 import { MinifyJS } from "./Tools/MinifyCode.ts";
 import { RequirementsPromiseCheckString, StylesInjectionString } from "./Tools/constants.ts";
 import { ResetScreen } from "./Tools/ResetScreen.ts";
+import { _clear_code_cache } from "./caches.ts";
+import { currentPort } from "../cli.ts";
+import { hash } from "./Tools/random.ts";
 
 export default async function({
     Name,
@@ -81,7 +84,7 @@ export default async function({
                 console.log(chalk.bgGrey("  Nothing changed. Doing nothing.  "));
             }
 
-            if (cssChanged) {
+            if (cssChanged && !codeChanged) {
                 updateClientContent("StyleChange", css);
             }
 
@@ -96,7 +99,7 @@ export default async function({
 
             bundling = false
         } catch (error) {
-            resetCachedCodeValues();
+            _clear_code_cache();
 
             ResetScreen();
 
@@ -132,9 +135,15 @@ export default async function({
 			)
 		)
 
+        applyingExtensionOra.stop();
+
+        await Update(false);
+
+        const extHash = await hash(Name);
+
         const devReloadTemplatePrepared = `
             ${RequirementsPromiseCheckString}
-            ${devReloadTemplate.replace("-1", `http://localhost:9235`).replace("-2", Name)}
+            ${devReloadTemplate.replace("-1", `http://localhost:${currentPort}`).replace("-2", Name).replace("-3", extHash)}
         `;
         const devReloadTemplateMinified = devReloadTemplatePrepared;
 
@@ -142,10 +151,6 @@ export default async function({
 			SpicetifyEntryPointPath,
 			devReloadTemplateMinified || devReloadTemplatePrepared
 		)
-
-        applyingExtensionOra.stop();
-
-        await Update(false);
 
         applyingExtensionOra.start();
 
@@ -177,17 +182,11 @@ export default async function({
 						console.log("")
 						storingExtensionOra.start();
 
-                        const [cssResult, codeResult] = await Bundle({ Type: "Offline", Name, Version: "offline", MainFile });
-                        
-                        const cssInjectionCode = StylesInjectionString.replace("INSERT_CSS_HERE", cssResult);
-                        const finalCodePrepared = `
-                            ${cssInjectionCode}
-                            ${RequirementsPromiseCheckString}
-                            ${codeResult}
-                        `;
-                        const finalCodeResult = await MinifyJS(finalCodePrepared);
+                        const [_cssResult, codeResult] = await Bundle({ Type: "Offline", Name, Version: "offline", MainFile });
 
-                        await Deno.writeTextFile(SpicetifyEntryPointPath, finalCodeResult || finalCodePrepared)
+                        const finalCodeResult = await MinifyJS(codeResult);
+
+                        await Deno.writeTextFile(SpicetifyEntryPointPath, finalCodeResult || codeResult)
 						await Apply();
 
 						storingExtensionOra.stop();

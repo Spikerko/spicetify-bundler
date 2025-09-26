@@ -1,6 +1,11 @@
 // deno-lint-ignore-file
 const WS_URL = "-1";
 const EXTENSION_NAME = "-2";
+const EXTENSION_HASH = "-3";
+
+if (!window._sB_devLoader) window._sB_devLoader = {};
+if (!window._sB_devLoader.name_hash_map) window._sB_devLoader.name_hash_map = {};
+window._sB_devLoader.name_hash_map[EXTENSION_NAME] = EXTENSION_HASH;
 
 const ShowNotification = (content, variant, autoHideDuration = 5000) => {
   Spicetify.Snackbar.enqueueSnackbar(
@@ -148,7 +153,12 @@ socket.addEventListener("open", () => {
             }
             const styles = document.createElement("style");
             styles.textContent = message.Content ?? "";
+            styles.id = `${EXTENSION_HASH}-styles`
             document.body.appendChild(styles);
+
+            if (!window._sB_devLoader[EXTENSION_HASH]) window._sB_devLoader[EXTENSION_HASH] = {};
+            window._sB_devLoader[EXTENSION_HASH]["styleElement"] = styles;
+
             currentStylesElement = styles;
             if (message.Content) {
               ShowNotification("Loaded CSS bundle successfully", "success");

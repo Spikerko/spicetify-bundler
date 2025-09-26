@@ -9,7 +9,9 @@ import CSSNano from "npm:cssnano@7.1.1";
 import CSSAdvancedNanoPreset from "npm:cssnano-preset-advanced@7.0.9";
 import { dirname, join, resolve, relative, fromFileUrl } from "jsr:@std/path@1.1.2";
 import { MinifyJS } from "./Tools/MinifyCode.ts";
-import { RequirementsPromiseCheckString, StylesInjectionString } from "./Tools/constants.ts";
+import { GetComponentCacheString, GetProjectHashesInjectionString, RequirementsPromiseCheckString, StylesInjectionString } from "./Tools/constants.ts";
+import { code_cache } from "./caches.ts";
+import { SetProjectHashes } from "./Tools/setProjectHashes.ts";
 
 export type BuildType = {
     Type: "Development" | "Release" | "Offline";
@@ -25,20 +27,11 @@ const WriteTextFile = (path: string, contents: string): Promise<void> => {
         .then(_ => Deno.writeTextFile(path, contents))
     );
 };
-const FormatCSSFile = (relativePath: string, css: string) => `/* ${relativePath} */\n${css}`;
+const FormatCSSFile = (_relativePath: string, css: string) => `${css}`;
 
 // Store our namespaces
 const SCSSInlineStyleNamespace = "SCSS-Inline-Styles";
 const CSSInlineStyleNamespace = "CSS-Inline-Styles";
-
-export let LastProcessedCSSString: string | undefined = undefined;
-export let LastProcessedCodeString: string | undefined = undefined;
-
-export const resetCachedCodeValues = () => {
-	LastProcessedCSSString = undefined;
-	LastProcessedCodeString = undefined;
-}
-
 
 const r = (s: string) => fromFileUrl(import.meta.resolve(`npm:${s}`));
 
@@ -215,7 +208,7 @@ export function resolve(from, to) {
     }).then(async (buildResult) => {
 
         const buildResultCode = buildResult.outputFiles?.[0]?.text ?? "";
-        const code = buildResultCode.replace(/\(void 0\)\(\)/g, "").replace(/\(void 0\)/g, "").replace(
+        const preCode = buildResultCode.replace(/\(void 0\)\(\)/g, "").replace(/\(void 0\)/g, "").replace(
             /new Array\(128\)\.fill;/g,
             "new Array(128).fill(undefined);"
         );
@@ -223,23 +216,30 @@ export function resolve(from, to) {
         const css = rawCSS.join("\n");
         const preparedCss = css.replace(/`/g, "\\`");
 
-		if (Type === "Release") {
-			const preparedCode = `
-				${StylesInjectionString.replace("INSERT_CSS_HERE", preparedCss)}
-				${RequirementsPromiseCheckString}
-				${code.toString()}
-			`;
+        await SetProjectHashes(Name, { code_string: preCode.toString() })
+        
+        const projHashCacheInj = GetProjectHashesInjectionString();
+        const componentCacheString = GetComponentCacheString();
 
-			const minifiedCode = await MinifyJS(preparedCode);
+        const code = [
+            ...(Type !== "Development" ? [RequirementsPromiseCheckString] : []),
+            projHashCacheInj,
+            componentCacheString,
+            ...(Type !== "Development" ? [StylesInjectionString.replace("INSERT_CSS_HERE", preparedCss)] : []),
+            preCode
+        ].join("\n")
+
+		if (Type === "Release") {
+			const minifiedCode = await MinifyJS(code);
 
 			await WriteTextFile(
 				join(Deno.cwd(), buildDir, `${Name}@${Version}.mjs`),
-				minifiedCode ?? preparedCode
+				minifiedCode ?? code
 			);
 		}
 
-        LastProcessedCSSString = preparedCss;
-        LastProcessedCodeString = code;
+        code_cache.css_string = preparedCss;
+        code_cache.code_string = code;
 
         return [preparedCss, code];
     });

@@ -15,6 +15,71 @@ Supports React, TypeScript, CSS, and SASS for Spicetify extensions.
 
 ---
 
+## Latest Feature
+
+### Project Components/Stores
+
+Allows you to store temporary data around your app, without any exports, or any hassle
+
+Example Usage:
+
+**src/userProfile.ts**
+```ts
+import { Component } from "@spicetify/bundler";
+
+// Define a simple UserProfile component
+const UserProfile = {
+  name: "DefaultUser",
+  email: "user@example.com",
+  lastLogin: new Date(),
+
+  updateProfile(name: string, email: string) {
+    this.name = name;
+    this.email = email;
+    console.log(`Profile updated for: ${this.name}`);
+  },
+
+  display() {
+    console.log(`--- User Profile ---`);
+    console.log(`Name: ${this.name}`);
+    console.log(`Email: ${this.email}`);
+    console.log(`Last Login: ${this.lastLogin.toLocaleString()}`);
+    console.log(`--------------------`);
+  }
+};
+
+// Register the UserProfile component as a root component,
+// making the component available globally via the Component module.
+Component.AddRootComponent('UserProfile', UserProfile);
+```
+
+**src/main.ts**
+```ts
+import { Component } from "@spicetify/bundler";
+
+console.log("Application starting...");
+
+// Now, we can retrieve the UserProfile component from anywhere in our app
+// without needing a direct import from the source file.
+const userProfileComponent = Component.GetRootComponent('UserProfile');
+
+if (userProfileComponent) {
+  console.log("Successfully retrieved 'UserProfile' component.");
+  userProfileComponent.display();
+
+  // We can also interact with it
+  userProfileComponent.updateProfile("Alice", "alice@web.com");
+  userProfileComponent.display();
+} else {
+  console.error("'UserProfile' component not found!");
+}
+
+// You can also see all registered components
+console.log("All registered components:", Component.GetDir());
+```
+
+Keep in mind that the `src/userProfile.ts` file needs to be ran somehow for the Component to save into the store
+
 ## Quickstart
 
 ### 1. Project Structure
@@ -139,7 +204,8 @@ Bundle({
 - **Version**: Required for `"Release"`
 - **EntrypointFile**: Entry file (default: `./src/index.tsx`)
 - **OutputDir**: Output directory (default: `./dist`, only for `"Release"`)
-- **RequireChangesToRefresh**: Only for `"Development"`
+- **RequireChangesToRefresh**: Only in `"Development"`
+- **Port**: Only in `"Development"` (default: `9235`)
 
 ### Example
 
