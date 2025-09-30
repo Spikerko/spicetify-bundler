@@ -5,12 +5,14 @@
 
 import type { PluginBuild } from 'npm:esbuild@0.25.9';
 
-export const externalGlobalPlugin = (externals: Record<string, string> = {
-    react: 'Spicetify.React',
-    'react-dom': 'Spicetify.ReactDOM',
-    'react-dom/client': 'Spicetify.ReactDOM',
-    'react-dom/server': 'Spicetify.ReactDOMServer'
-}) => {
+export const defaultExternalGlobalPluginExternals = {
+  react: 'Spicetify.React',
+  'react-dom': 'Spicetify.ReactDOM',
+  'react-dom/client': 'Spicetify.ReactDOM',
+  'react-dom/server': 'Spicetify.ReactDOMServer',
+}
+
+export const externalGlobalPlugin = (externals: Record<string, string> = defaultExternalGlobalPluginExternals) => {
   const namespace = 'external-global';
   return {
     name: namespace,

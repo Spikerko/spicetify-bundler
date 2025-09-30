@@ -1,12 +1,12 @@
 import { ToggleExtension, GetSpicetifyExtensionsDirectory, Apply, RemoveExtension } from "./Tools/SpicetifyTerminal.ts";
-import Bundle from "./bundler.ts";
+import Bundle, { type CustomBuildOptionsType } from "./bundler.ts";
 import chalk from 'npm:chalk@5.6.0';
 import { keypress, type KeyPressEvent } from "jsr:@codemonument/cliffy@1.0.0-rc.3/keypress"
 import ora from 'npm:ora@8.2.0';
 import { broadcastBundlingError, updateClientContent } from "./WsServer.ts";
 import { join, fromFileUrl } from "jsr:@std/path@1.1.2"
 import { MinifyJS } from "./Tools/MinifyCode.ts";
-import { RequirementsPromiseCheckString, StylesInjectionString } from "./Tools/constants.ts";
+import { RequirementsPromiseCheckString } from "./Tools/constants.ts";
 import { ResetScreen } from "./Tools/ResetScreen.ts";
 import { _clear_code_cache } from "./caches.ts";
 import { currentPort } from "../cli.ts";
@@ -15,8 +15,9 @@ import { hash } from "./Tools/random.ts";
 export default async function({
     Name,
     MainFile,
-    RequireChangesToRefresh
-}: { Name: string; MainFile: string; RequireChangesToRefresh: boolean; }) {
+    RequireChangesToRefresh,
+    CustomBuildOptions
+}: { Name: string; MainFile: string; RequireChangesToRefresh: boolean; CustomBuildOptions?: CustomBuildOptionsType; }) {
 
     const SpicetifyEntryPoint: string = `${Name}.mjs`;
     const SpicetifyEntryPointPath: string = join(await GetSpicetifyExtensionsDirectory(), SpicetifyEntryPoint)
@@ -66,6 +67,7 @@ export default async function({
                     Version: testVersion.toString(),
                     Name,
                     MainFile,
+                    CustomBuildOptions,
                 }
             );
 

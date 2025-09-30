@@ -1,20 +1,22 @@
 import chalk from "npm:chalk@5.6.0";
 import { ResetScreen } from "./Tools/ResetScreen.ts";
 import ora from "npm:ora@8.2.0";
-import Bundle from "./bundler.ts";
+import Bundle, { type CustomBuildOptionsType } from "./bundler.ts";
 
 export type ReleaseBundleType = {
     Version: string;
     Name: string;
 	MainFile: string;
     BuildDir: string;
+    CustomBuildOptions?: CustomBuildOptionsType;
 };
 
 export default async function({
     Version,
     Name,
 	MainFile,
-    BuildDir
+    BuildDir,
+    CustomBuildOptions
 }: ReleaseBundleType) {
     ResetScreen();
 
@@ -28,7 +30,8 @@ export default async function({
         Version,
         Name,
         MainFile,
-        BuildDir
+        BuildDir,
+        CustomBuildOptions
     })
 
     bundleOra.stop();

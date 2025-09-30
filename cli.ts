@@ -4,6 +4,7 @@ import { startWSServer, wsRunning } from "./Source/WsServer.ts";
 import chalk from 'npm:chalk@5.6.0';
 import ora from 'npm:ora@8.2.0';
 import { ResetScreen } from "./Source/Tools/ResetScreen.ts";
+import type { CustomBuildOptionsType } from "./Source/bundler.ts";
 
 export type RunBundlerType =
     | {
@@ -12,6 +13,7 @@ export type RunBundlerType =
         Name: string;
         EntrypointFile?: string;
         OutputDir?: string;
+        CustomBuildOptions?: CustomBuildOptionsType;
     }
     | {
         Type: "Development";
@@ -19,7 +21,8 @@ export type RunBundlerType =
         Name: string;
         EntrypointFile?: string;
         RequireChangesToRefresh?: boolean;
-        Port?: number
+        Port?: number;
+        CustomBuildOptions?: CustomBuildOptionsType;
     };
 
 export let currentPort = 9235;
@@ -35,13 +38,14 @@ export async function Bundle({
     OutputDir,
     // @ts-expect-error Port only exists on Development type
     Port,
+    CustomBuildOptions,
 }: RunBundlerType) {
 
     if (Port !== undefined && typeof Port === "number") {
         currentPort = Port;
     }
 
-    const mainFileProcessed = EntrypointFile ?? "./src/index.tsx";
+    const mainFileProcessed = EntrypointFile ?? "./src/index.ts";
 
     const wsPreparingOra = ora(chalk.bgBlue("  Starting the Websocket server...  "))
 
@@ -74,12 +78,12 @@ export async function Bundle({
             throw new Error("Missing required properties");
         }
         const requireChangesToRefresh = RequireChangesToRefresh ?? true;
-        DevBundle({ Name, MainFile: mainFileProcessed, RequireChangesToRefresh: requireChangesToRefresh });
+        DevBundle({ Name, MainFile: mainFileProcessed, RequireChangesToRefresh: requireChangesToRefresh, ...(CustomBuildOptions ? { CustomBuildOptions } : {}) });
     } else if (Type === "Release") {
         if (!Type || !Version || !Name) {
             throw new Error("Missing required properties");
         }
-        ReleaseBundle({ Version, Name, MainFile: mainFileProcessed, BuildDir: (OutputDir ?? "./dist") })
+        ReleaseBundle({ Version, Name, MainFile: mainFileProcessed, BuildDir: (OutputDir ?? "./dist"), ...(CustomBuildOptions ? { CustomBuildOptions } : {}) })
     } else {
         throw new Error("Type Unavailable");
     }
