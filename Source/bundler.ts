@@ -17,7 +17,6 @@ import {
   relative,
   fromFileUrl,
 } from "jsr:@std/path@1.1.2";
-import { MinifyJS } from "./Tools/MinifyCode.ts";
 import {
   GetComponentCacheString,
   GetProjectHashesInjectionString,
@@ -250,10 +249,7 @@ export function resolve(from, to) {
     })
     .then(async (buildResult) => {
       const buildResultCode = buildResult.outputFiles?.[0]?.text ?? "";
-      const preCode = buildResultCode
-        .replace(/\(void 0\)\(\)/g, "")
-        .replace(/\(void 0\)/g, "")
-        .replace(/new Array\(128\)\.fill;/g, "new Array(128).fill(undefined);");
+      const preCode = buildResultCode;
 
       const css = rawCSS.join("\n");
       const preparedCss = css.replace(/`/g, "\\`");
@@ -274,7 +270,7 @@ export function resolve(from, to) {
       ].join("\n");
 
       if (Type === "Release") {
-        const minifiedCode = await MinifyJS(code);
+        const minifiedCode = code;
 
         await WriteTextFile(
           join(Deno.cwd(), buildDir, `${Name}@${Version}.mjs`),
