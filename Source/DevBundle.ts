@@ -184,7 +184,7 @@ export default async function({
 						console.log("")
 						storingExtensionOra.start();
 
-                        const [_cssResult, codeResult] = await Bundle({ Type: "Offline", Name, Version: "offline", MainFile });
+                        const [_cssResult, codeResult] = await Bundle({ Type: "Offline", Name, Version: "offline", MainFile, CustomBuildOptions });
 
                         await Deno.writeTextFile(SpicetifyEntryPointPath, codeResult)
 						await Apply();
