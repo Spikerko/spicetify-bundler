@@ -186,9 +186,7 @@ export default async function({
 
                         const [_cssResult, codeResult] = await Bundle({ Type: "Offline", Name, Version: "offline", MainFile });
 
-                        const finalCodeResult = await MinifyJS(codeResult);
-
-                        await Deno.writeTextFile(SpicetifyEntryPointPath, finalCodeResult || codeResult)
+                        await Deno.writeTextFile(SpicetifyEntryPointPath, codeResult)
 						await Apply();
 
 						storingExtensionOra.stop();
