@@ -20,8 +20,9 @@ import {
 import {
   GetComponentCacheString,
   GetProjectHashesInjectionString,
+  GetStylesInjectionString,
   RequirementsPromiseCheckString,
-  StylesInjectionString,
+  GetExposeComponentApisString,
 } from "./Tools/constants.ts";
 import { code_cache } from "./caches.ts";
 import { SetProjectHashes } from "./Tools/setProjectHashes.ts";
@@ -29,6 +30,8 @@ import { SetProjectHashes } from "./Tools/setProjectHashes.ts";
 export type CustomBuildOptionsType = {
   skipGlobalReplacementRules?: boolean;
   additionalGlobalReplacementRules?: Record<string, string>;
+  exposeComponentApis?: boolean;
+  exposeComponentApisMutation?: boolean;
 };
 
 export type BuildType = {
@@ -258,16 +261,25 @@ export function resolve(from, to) {
 
       const projHashCacheInj = GetProjectHashesInjectionString();
       const componentCacheString = GetComponentCacheString();
+      const stylesInjectionString = await GetStylesInjectionString(preparedCss);
+      const exposeComponentApisString = GetExposeComponentApisString({
+        projName: Name,
+        exposeMutation:
+          CustomBuildOptions?.exposeComponentApisMutation === undefined
+            ? false
+            : CustomBuildOptions?.exposeComponentApisMutation,
+      });
 
       const code = [
         ...(Type !== "Development" ? [RequirementsPromiseCheckString] : []),
         projHashCacheInj,
         componentCacheString,
-        ...(Type !== "Development"
-          ? [StylesInjectionString.replace("INSERT_CSS_HERE", preparedCss)]
+        ...(Type !== "Development" ? [stylesInjectionString] : []), 
+        ...(CustomBuildOptions?.exposeComponentApis === true
+          ? [exposeComponentApisString]
           : []),
         preCode,
-      ].join("\n");
+      ].join(";");
 
       if (Type === "Release") {
         const minifiedCode = code;
