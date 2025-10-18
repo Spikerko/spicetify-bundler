@@ -17,12 +17,12 @@ export const _local_hashes: ComponentHashCache = _local_component_hash_cache_var
 
 export const Spicetify: typeof SpicetifyTypes = (globalThis as any).Spicetify;
 
-export function buildCacheDirectoryName(project_hash: string, joined_code_hash: string) {
-  return (window as any)[GlobalComponentCacheNaming][project_hash][joined_code_hash];
+export function buildCacheDirectoryName(general_hash: string) {
+  return (window as any)[GlobalComponentCacheNaming][general_hash];
 }
 
 const _internal_getDir = () => {
-  return buildCacheDirectoryName(_local_hashes.project_hash, _local_hashes.joined_code_hash);
+  return buildCacheDirectoryName(_local_hashes.general_hash);
 }
 
 const _reseved_component_names = ["styleElement"];
