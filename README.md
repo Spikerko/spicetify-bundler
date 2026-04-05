@@ -1,3 +1,11 @@
+# ⚠️ Warning
+### This package has been archived, and will not receive any future updates until further notice.
+If you'd like to continue using a tool to bundle your Spicetify extension, I highly recommend [Sachu's @spicemod/creator](https://www.npmjs.com/package/@spicemod/creator).
+
+Thanks for understanding.
+
+# -----------------------------------------
+
 # @spicetify/bundler
 
 **Spicetify Extension Bundler**  
